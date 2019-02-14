@@ -1,0 +1,134 @@
+[
+	{
+		"id": 122,
+		"acf": {
+			"question": "https://i.imgur.com/4lVkEtF.png",
+			"answer": {
+				"answer_a": {
+					"imga": "https://i.imgur.com/9Vry7rd.png",
+					"ta": ["t"]
+				},
+				"answer_b": {
+					"imgb": "https://i.imgur.com/zofE4W0.png",
+					"tb": ""
+				},
+				"answer_c": {
+					"imgc": false,
+					"soundc": false,
+					"tc": ""
+				},
+				"answer_d": {
+					"imgd": false,
+					"sounds": false,
+					"td": ""
+				},
+				"answer_e": {
+					"imge": false,
+					"sounde": false,
+					"te": ""
+				},
+				"answer_f": {
+					"imgf": false,
+					"soundf": false,
+					"tf": ""
+				}
+			}
+		}
+	},
+	{
+		"id": 49,
+		"acf": {
+			"question": "https://i.imgur.com/cDYBECy.png",
+			"answer": {
+				"answer_a": {
+					"imga": "https://i.imgur.com/dzSvoPx.png",
+					"ta": ""
+				},
+				"answer_b": {
+					"imgb": "https://i.imgur.com/JdVxrJw.png",
+					"tb": ""
+				},
+				"answer_c": {
+					"imgc": "https://i.imgur.com/tVzproO.png",
+					"tc": ["t"]
+				},
+				"answer_d": {
+					"imgd": false,
+					"td": ""
+				},
+				"answer_e": {
+					"imge": false,
+					"te": ""
+				},
+				"answer_f": {
+					"imgf": false,
+					"tf": ""
+				}
+			}
+		}
+	},
+	{
+		"id": 40,
+		"acf": {
+			"question": "https://i.imgur.com/TH4Dkre.png",
+			"answer": {
+				"answer_a": {
+					"imga": "https://i.imgur.com/dUL7Igh.png",
+					"ta": ""
+				},
+				"answer_b": {
+					"imgb": "https://i.imgur.com/Tw5vtlC.png",
+					"tb": ["t"]
+				},
+				"answer_c": {
+					"imgc": "https://i.imgur.com/yFf06xX.png",
+					"tc": ""
+				},
+				"answer_d": {
+					"imgd": false,
+					"td": ""
+				},
+				"answer_e": {
+					"imge": false,
+					"te": ["t"]
+				},
+				"answer_f": {
+					"imgf": false,
+					"tf": ""
+				}
+			}
+		}
+	},
+	{
+		"id": 25,
+		"acf": {
+			"question": "https://i.imgur.com/6ZVcbjU.png",
+			"answer": {
+				"answer_a": {
+					"imga": "https://i.imgur.com/mU9VMug.png",
+					"ta": ""
+				},
+				"answer_b": {
+					"imgb": "https://i.imgur.com/AXityxM.png",
+					"tb": ["t"]
+				},
+				"answer_c": {
+					"imgc": "https://i.imgur.com/ogy8YNC.png",
+					"tc": ""
+				},
+				"answer_d": {
+					"imgd": false,
+					"td": ""
+				},
+				"answer_e": {
+					"imge": false,
+					"te": ""
+				},
+				"answer_f": {
+					"imgf": false,
+					"tf": ""
+				}
+			}
+		}
+	}
+]
