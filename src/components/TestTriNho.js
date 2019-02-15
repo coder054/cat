@@ -69,6 +69,9 @@ const TestTriNho = observer(
 
 
 		handleClick(answer){
+			if( this.isClickXemKetQua){
+				return
+			}
 			let result = false
 			let answerName = "answer_" + answer
 			let tName = "t" + answer
