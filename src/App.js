@@ -8,29 +8,31 @@ import Home from "./components/Home"
 import Header from './components/Header';
 import Question from './components/Question';
 import TestTriNho from './components/TestTriNho';
+import MatchingTest from './components/MatchingTest';
 import PowerPlugDemo from './components/PowerPlugDemo';
 import "bootstrap/dist/css/bootstrap.css"
 
 
 
 class App extends Component {
-	render() {
-		return (
-			<Router>
-				<div className="App container">
-					<Header></Header>
-					<Switch>
-						<Route path="/forecast/:cityname" component={ForecastOneCity} />
-						<Route path="/question/:id" component={Question} />
-						<Route path="/testtrinho" component={TestTriNho} />
-						<Route path="/powerplug" component={PowerPlugDemo} />
-						<Route path="/" exact component={Home} />
-						<Route exact path="*" component={Notfound} />
-					</Switch>
-				</div>
-			</Router>
-		)
-	}
+  render() {
+    return (
+      <Router>
+        <div className="App container">
+          <Header></Header>
+          <Switch>
+            <Route path="/forecast/:cityname" component={ForecastOneCity} />
+            <Route path="/question/:id" component={Question} />
+            <Route path="/testtrinho" component={TestTriNho} />
+            <Route path="/matchingtest" component={MatchingTest} />
+            <Route path="/powerplug" component={PowerPlugDemo} />
+            <Route path="/" exact component={Home} />
+            <Route exact path="*" component={Notfound} />
+          </Switch>
+        </div>
+      </Router>
+    )
+  }
 }
 
 export default App
