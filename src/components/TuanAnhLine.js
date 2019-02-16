@@ -7,15 +7,39 @@ import classNames from 'classnames'
 import matchingData from './../data/matching.json'
 
 
+
+class LineToWrapper extends Component{
+		componentDidUpdate(prevProps, prevState) {
+			// only update chart if the cityname has changed
+			// if (prevProps.match.params.cityname !== this.props.match.params.cityname) {
+			//   this.fetchData()
+			// }
+			// coll
+			console.log('prevProps', prevProps)
+			console.log('this.props ', this.props )
+			
+		}
+
+	render(){
+		const {i, from, to} = this.props 
+		return (
+			<LineTo
+				from={from}  
+				to={to}  
+				fromAnchor="middle right" 
+				toAnchor="middle left"  
+				borderWidth={3} 
+				borderColor="#006699" 
+				key={i} /> 
+		)
+	}
+}
+
+
+
 const TuanAnhLine = observer(
 	class TuanAnhLine extends Component{  
 		data = []
-		// from1= null  
-		// to1 = null 
-		// from2= null  
-		// to2 = null
-		// from3= null  
-		// to3 = null
 		lineData = [{},{}, {}]
 		resultList= []
 		currentIndex = 1
@@ -24,14 +48,13 @@ const TuanAnhLine = observer(
 		isClickXemKetQua = false
 		
 		reset= ()=>{
-
 			let a = this.lineData[this.currentQuestionIndex]
-			a.from1 = null  
-			a.to1 = null  
-			a.from2= null 
-			a.to2 = null
-			a.from3= null 
-			a.to3 = null
+			a["from" + this.currentQuestionIndex + 1] = null  
+			a["to" + this.currentQuestionIndex + 1] = null  
+			a["from" + this.currentQuestionIndex + 2] = null  
+			a["to" + this.currentQuestionIndex + 2] = null  
+			a["from" + this.currentQuestionIndex + 3] = null  
+			a["to" + this.currentQuestionIndex + 3] = null  
 			a.currentIndex = 1
 			this.resultList[this.currentQuestionIndex] = null 
 
@@ -85,14 +108,21 @@ const TuanAnhLine = observer(
 		handleLeftImageClick(from){
 			
 			let a = this.lineData[this.currentQuestionIndex] 
-			a["from"+ a.currentIndex] = from
+
+			if(a.currentIndex === this.numberOfImageOfCurrentQuestion() + 1){
+				return
+			}
+			a["from"+ this.currentQuestionIndex + a.currentIndex] = from
 			this.updateIndex()
 
 		}
 
 		handleRightImageClick(to){
 			let a = this.lineData[this.currentQuestionIndex] 
-			a["to"+ a.currentIndex] = to
+			if(a.currentIndex === this.numberOfImageOfCurrentQuestion() + 1){
+				return
+			}
+			a["to" + this.currentQuestionIndex +  a.currentIndex] = to
 		
 			this.updateIndex()
 		}
@@ -102,8 +132,9 @@ const TuanAnhLine = observer(
 			let acf = this.data[this.currentQuestionIndex].acf
 			for(let i = 0; i < this.numberOfImageOfCurrentQuestion(); i++){
 				let y = i + 1
-				let questionName = this.lineData[this.currentQuestionIndex]["from" + y]
-				let answerName = this.lineData[this.currentQuestionIndex]["to" + y]
+				console.log({...this.lineData[this.currentQuestionIndex]})
+				let questionName = this.lineData[this.currentQuestionIndex]["from" + this.currentQuestionIndex + y]
+				let answerName = this.lineData[this.currentQuestionIndex]["to" + this.currentQuestionIndex + y]
 				if( acf.question[questionName].tag !== acf.answer[answerName].tag ){
 					this.resultList[this.currentQuestionIndex] = false
 					return
@@ -113,8 +144,9 @@ const TuanAnhLine = observer(
 		}
 
 		updateIndex(){
+
 			let a = this.lineData[this.currentQuestionIndex]
-			if(a["from"+ a.currentIndex] && a["to"+ a.currentIndex]){
+			if(a["from"+ this.currentQuestionIndex + a.currentIndex] && a["to"+ this.currentQuestionIndex + a.currentIndex]){
 				a.currentIndex++
 			}
 			if(a.currentIndex === this.numberOfImageOfCurrentQuestion() + 1){
@@ -151,17 +183,22 @@ const TuanAnhLine = observer(
 				let lines = []
 				for(let i = 0; i < this.numberOfImageOfCurrentQuestion(); i++){
 					lines.push(
-							<LineTo
-								from={a["from" + (i + 1)]}  
-								to={a["to" + (i + 1)]}  
+							<div>
+							{/* <LineTo
+								from={}  
+								to={}  
 								fromAnchor="middle right" 
 								toAnchor="middle left"  
 								borderWidth={3} 
 								borderColor="#006699" 
-				       	key={i} /> 
+								key={i} /> */}
+
+								<LineToWrapper i={i} 
+									from={a["from" + this.currentQuestionIndex + (i + 1)]}
+								  to={a["to" + this.currentQuestionIndex +(i + 1)]} />
+							</div>
 						)
 				}
-
 				return lines
 		}
 
@@ -176,39 +213,6 @@ const TuanAnhLine = observer(
 		} = currentQuestion
 
 
-			const line1 = a.from1 && a.to1 && question_1.image ? (  
-				<LineTo
-					from={a.from1}  
-					to={a.to1}  
-					fromAnchor="middle right" 
-					toAnchor="middle left"  
-					borderWidth={3} 
-					borderColor="#009999" 
-				/>  
-			) : null; 
-
-
-			const line2 = a.from2 && a.to2 && question_2.image ? (  
-				<LineTo 
-					from={a.from2}  
-					to={a.to2}  
-					fromAnchor="middle right" 
-					toAnchor="middle left"  
-					borderWidth={3} 
-					borderColor="#006699" 
-				/>  
-			) : null;
-
-			const line3 = a.from3 && a.to3 && question_3.image ? (  
-				<LineTo 
-					from={a.from3}  
-					to={a.to3}  
-					fromAnchor="middle right" 
-					toAnchor="middle left"  
-					borderWidth={3} 
-					borderColor="#996600" 
-				/>  
-			) : null; 
 			return (  
 				<div className="TuanAnhLine-wrapper"> 
 
@@ -255,39 +259,39 @@ const TuanAnhLine = observer(
 						)}
 						<div className="left">  
 {!!question_1.image && (
-								<img onClick={e => {this.handleLeftImageClick("question_1")} }  
-								className="question_1" src={question_1.image} alt=""/>                
+								<img onClick={e => {this.handleLeftImageClick(`question_${this.currentQuestionIndex}1`)} }  
+								className={`question_${this.currentQuestionIndex}1`} src={question_1.image} alt=""/>                
 )}
 
 {!!question_2.image && (
-								<img onClick={e => {this.handleLeftImageClick("question_2")} }  
-								className="question_2" src={question_2.image} alt=""/>                
+								<img onClick={e => {this.handleLeftImageClick(`question_${this.currentQuestionIndex}2`)} }  
+								className={`question_${this.currentQuestionIndex}2`} src={question_2.image} alt=""/>                
 )}
 
 
 {!!question_3.image && (
-								<img onClick={e => {this.handleLeftImageClick("question_3")} }  
-								className="question_3" src={question_3.image} alt=""/>                
+								<img onClick={e => {this.handleLeftImageClick(`question_${this.currentQuestionIndex}3`)} }  
+								className={`question_${this.currentQuestionIndex}3`} src={question_3.image} alt=""/>                
 )}
 
 
 						</div>  
 						<div className="right"> 
 {!!answer_1.image && (
-								<img onClick={e => {this.handleRightImageClick("answer_1")} }   
-								className="answer_1" src={answer_1.image} alt=""/>              
+								<img onClick={e => {this.handleRightImageClick(`answer_${this.currentQuestionIndex}1`)} }   
+								className={`answer_${this.currentQuestionIndex}1`} src={answer_1.image} alt=""/>              
 )}
 
 
 {!!answer_2.image && (
-								<img onClick={e => {this.handleRightImageClick("answer_2")} }   
-								className="answer_2" src={answer_2.image} alt=""/>            
+								<img onClick={e => {this.handleRightImageClick(`answer_${this.currentQuestionIndex}2`)} }   
+								className={`answer_${this.currentQuestionIndex}2`} src={answer_2.image} alt=""/>            
 )}
 
 
 {!!answer_3.image && (
-								<img onClick={e => {this.handleRightImageClick("answer_3")} }   
-								className="answer_3" src={answer_3.image} alt=""/>        
+								<img onClick={e => {this.handleRightImageClick(`answer_${this.currentQuestionIndex}3`)} }   
+								className={`answer_${this.currentQuestionIndex}3`} src={answer_3.image} alt=""/>        
 )}
 
 						</div>  
@@ -299,7 +303,7 @@ const TuanAnhLine = observer(
 							? this.data.map((item, i) => (
 									<span key={item.id} className={classNames('dot-navigation', {'is-active': this.currentQuestionIndex === i})} onClick={e => {
 										this.currentQuestionIndex = i
-										this.reset()
+										// this.reset()
 									}}> </span>
 								))
 							: null
@@ -408,13 +412,6 @@ export default TuanAnhLine
 
 
 decorate(TuanAnhLine, {
-	currentIndex: observable,
-	from1: observable,
-	to1: observable,
-	from2: observable,
-	to2: observable,  
-	from3: observable,
-	to3: observable,
 	data: observable,
 	lineData: observable,
 	currentQuestionIndex: observable,

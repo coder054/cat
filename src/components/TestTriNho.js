@@ -4,7 +4,8 @@ import { decorate, observable, flow, computed, action } from "mobx"
 import { observer } from "mobx-react"
 import FontAwesome from "react-fontawesome"
 import classNames from 'classnames'
-var counterTime = 1
+import axios from 'axios'
+var counterTime = 5
 
 const TestTriNho = observer(
 	class TestTriNho extends Component{ 
@@ -46,10 +47,21 @@ const TestTriNho = observer(
 
 
 		componentDidMount(){ 
-			for(let i = 0; i < this.data.length; i++){
-				this.resultsOfUser.push(null)
-				this.resultOfUserRaw.push(null)
-			}
+			// for(let i = 0; i < this.data.length; i++){
+			//  this.resultsOfUser.push(null)
+			//  this.resultOfUserRaw.push(null)
+			// }
+			// this.interval = setInterval(() => this.tick(), 1000);
+
+			axios.get('http://khoi.catopiana.com/wp-json/acf/v3/mem')
+			.then(result => {
+				this.data = result.data
+				for(let i = 0; i < this.data.length; i++){
+					this.resultsOfUser.push(null)
+					this.resultOfUserRaw.push(null)
+				}
+			})
+
 			this.interval = setInterval(() => this.tick(), 1000);
 		} 
 
@@ -108,6 +120,8 @@ const TestTriNho = observer(
 			const question = this.currentItem().acf
 			return (  
 				<div className="TestTriNho-wrapper">  
+
+					<p> index: {this.index} </p>
 					{!!this.showKetQua() && (
 						<div className="show-kg-button-wr"> 
 							<button onClick={e=> {
