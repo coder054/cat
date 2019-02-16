@@ -5,6 +5,9 @@ import { observer, inject } from "mobx-react"
 import axios from "axios"
 import classNames from 'classnames'
 import matchingData from './../data/matching.json'
+import {remove_character} from "./../helpers/index.js"
+var audioUrl = "https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-18146/zapsplat_multimedia_click_003_19369.mp3?_=1"
+var audio  = new Audio(audioUrl)
 
 
 
@@ -12,35 +15,38 @@ const TuanAnhLine = observer(
 	class TuanAnhLine extends Component{  
 		data = []
 		lineData = []
-		resultList= []
+		resultList= [] // [true, false, null] cau dau tien dung, cau thu hai sai, cau thu ba chua tra loi
 		currentIndex = 1
 		currentQuestionIndex = 0
 		showAnswer = false
 		isClickXemKetQua = false
 		
-		reset= ()=>{
+		reset= ( redrawMode = false )=>{
 			let a = this.lineData[this.currentQuestionIndex]
 			for(let i = 0; i < this.numberOfQuestion(this.data[this.currentQuestionIndex]); i++){
 			  a[i] = {from: null, to: null}
 			}
-			this.resultList[this.currentQuestionIndex] = null 
+
+			if(!redrawMode){
+				this.resultList[this.currentQuestionIndex] = null 
+			}else{
+
+			}
+			
 		}
 
 		reDrawLines = () => {
 			let a = this.lineData[this.currentQuestionIndex]
 			let b = [...a]
-			this.reset()
+			this.reset(true)
 
 			for(let i = 0; i < b.length; i++){
 			  setTimeout(() => {
 					a[i] = {from: b[i].from, to: b[i].to}
-						console.log( toJS(this.lineData) )
-			  },100)
+			  },800)
 			}
-		
+			
 		}
-
-
 
 		showKetQua = () => {
 			return this.numberOfQuestionLeft() === 0
@@ -116,7 +122,7 @@ const TuanAnhLine = observer(
 			  }
 			}	
 
-			console.log( toJS(a) )
+			this.checkAnswer()
 
 		}
 
@@ -132,25 +138,38 @@ const TuanAnhLine = observer(
 			  	break
 			  }
 			}	
-			console.log( toJS(a) )
+
+			this.checkAnswer()
 		}
 
+
+
 		checkAnswer(){
-			let result = true
+			let a = this.lineData[this.currentQuestionIndex]
+			// neu van con anh chua noi het, khong check nua
+			for(let i = 0; i < a.length; i++){
+			  if(a[i].from === null || a[i].to === null) {
+			  	return
+			  }
+			}
+			// nguoi dung noi tat ca cac anh, tiep tuc
 			let acf = this.data[this.currentQuestionIndex].acf
+			
 			for(let i = 0; i < this.numberOfImageOfCurrentQuestion(); i++){
 				let y = i + 1
-				console.log({...this.lineData[this.currentQuestionIndex]})
-				let questionName = this.lineData[this.currentQuestionIndex]["from" + this.currentQuestionIndex + y]
-				let answerName = this.lineData[this.currentQuestionIndex]["to" + this.currentQuestionIndex + y]
+				
+				let questionName = remove_character(a[i].from , 9)
+				let answerName = remove_character(a[i].to , 7)
+
 				if( acf.question[questionName].tag !== acf.answer[answerName].tag ){
 					this.resultList[this.currentQuestionIndex] = false
+					console.log('this.resultList', toJS(this.resultList) )
 					return
 				}
 			}
 			this.resultList[this.currentQuestionIndex] = true
+			console.log('this.resultList', toJS(this.resultList) )
 		}
-
 
 		componentDidMount(){
 			this.data = matchingData
@@ -212,37 +231,23 @@ const TuanAnhLine = observer(
 
 
 				{this.renderLines()}
+
+					<div className="left-right-wr"> 
 					{!!this.showKetQua() && (
 						<div className="show-kg-button-wr"> 
 							<button onClick={e=> {
 								this.isClickXemKetQua = true
-								this.currentQuestionIndex = 0
+								// this.currentQuestionIndex = 0
+								// this.reDrawLines()
 							}} className="xemkq"> Xem Ket qua </button> 
 						</div>  
 					
 					)}
-					<div className="left-right-wr"> 
+					{
+						// !this.isClickXemKetQua
+						true
 
-{this.isClickXemKetQua && (
-						<div> 
-							{ 
-								this.resultList[this.currentQuestionIndex] === null ?   
-								( null ): 
-								( <p> 
-										<p> {this.ketquaCuthe()} </p>
-									{ 
-										this.resultList[this.currentQuestionIndex] === true ?   
-										( <div className="text-success"> <i className="fa fa-check"></i> Đúng </div> ): 
-										( <div className="text-danger"> <i className="fa fa-times"></i> Sai </div> )  
-									} 
-	
-								</p> )  
-							} 
-						</div>    
-					
-)}
-
-					{!this.isClickXemKetQua && (
+						 && (
 						<p>  Bạn còn: {this.numberOfQuestionLeft()} câu hỏi chưa trả lời! </p>  
 					
 					)}
@@ -252,18 +257,21 @@ const TuanAnhLine = observer(
 						)}
 						<div className="left">  
 {!!question_1.image && (
-								<img onClick={e => {this.handleLeftImageClick(`question_${this.currentQuestionIndex}1`)} }  
+								<img onClick={e => {this.handleLeftImageClick(`question_${this.currentQuestionIndex}1`)
+								audio.play()} }  
 								className={`question_${this.currentQuestionIndex}1`} src={question_1.image} alt=""/>                
 )}
 
 {!!question_2.image && (
-								<img onClick={e => {this.handleLeftImageClick(`question_${this.currentQuestionIndex}2`)} }  
+								<img onClick={e => {this.handleLeftImageClick(`question_${this.currentQuestionIndex}2`)
+							audio.play()} }  
 								className={`question_${this.currentQuestionIndex}2`} src={question_2.image} alt=""/>                
 )}
 
 
 {!!question_3.image && (
-								<img onClick={e => {this.handleLeftImageClick(`question_${this.currentQuestionIndex}3`)} }  
+								<img onClick={e => {this.handleLeftImageClick(`question_${this.currentQuestionIndex}3`)
+							audio.play()} }  
 								className={`question_${this.currentQuestionIndex}3`} src={question_3.image} alt=""/>                
 )}
 
@@ -271,19 +279,22 @@ const TuanAnhLine = observer(
 						</div>  
 						<div className="right"> 
 {!!answer_1.image && (
-								<img onClick={e => {this.handleRightImageClick(`answer_${this.currentQuestionIndex}1`)} }   
+								<img onClick={e => {this.handleRightImageClick(`answer_${this.currentQuestionIndex}1`)
+							audio.play()} }   
 								className={`answer_${this.currentQuestionIndex}1`} src={answer_1.image} alt=""/>              
 )}
 
 
 {!!answer_2.image && (
-								<img onClick={e => {this.handleRightImageClick(`answer_${this.currentQuestionIndex}2`)} }   
+								<img onClick={e => {this.handleRightImageClick(`answer_${this.currentQuestionIndex}2`)
+							audio.play()} }   
 								className={`answer_${this.currentQuestionIndex}2`} src={answer_2.image} alt=""/>            
 )}
 
 
 {!!answer_3.image && (
-								<img onClick={e => {this.handleRightImageClick(`answer_${this.currentQuestionIndex}3`)} }   
+								<img onClick={e => {this.handleRightImageClick(`answer_${this.currentQuestionIndex}3`)
+							audio.play()} }   
 								className={`answer_${this.currentQuestionIndex}3`} src={answer_3.image} alt=""/>        
 )}
 
@@ -296,13 +307,35 @@ const TuanAnhLine = observer(
 							? this.data.map((item, i) => (
 									<span key={item.id} className={classNames('dot-navigation', {'is-active': this.currentQuestionIndex === i})} onClick={e => {
 										this.currentQuestionIndex = i
-										this.reDrawLines()
-										console.log( toJS(this.lineData) )
+										setTimeout(()=> {
+											this.reDrawLines()
+										}, 100)
+
 									}}> </span>
 								))
 							: null
 						}
 					</div>
+
+
+					{this.isClickXemKetQua && (
+						<div> 
+							{ 
+								this.resultList[this.currentQuestionIndex] === null ?   
+								( null ): 
+								( <div> 
+									<p> {this.ketquaCuthe()} </p>
+									{ 
+										this.resultList[this.currentQuestionIndex] === true ?   
+										( <div className="text-success"> <i className="fa fa-check"></i> Đúng </div> ): 
+										( <div className="text-danger"> <i className="fa fa-times"></i> Sai </div> )  
+									} 
+	
+								</div> )  
+							} 
+						</div>    
+					
+					)}
 				<style jsx global> {`   
 	.left{  
 		float: left;  
@@ -393,6 +426,47 @@ const TuanAnhLine = observer(
 .left img:hover, .right img:hover {
 	 transform: scale(1.01, 1.01);
 }
+
+.left img, .right img{
+  height: 150px;
+  border: 1px solid #efefef;
+  margin-bottom: 20px;
+  width: auto;
+}
+.left-right-wr{
+  // background: #ddd;
+  padding: 15px;
+  margin-bottom: 40px;
+  height: 600px;
+}
+
+.xemkq {
+  position: absolute;
+  bottom: -70px;
+  right: 0px;
+}
+
+.left-right-wr{
+  position: relative;
+}
+
+.lamlai-btn{
+  width: 100px;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid green;
+  color: green;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.lamlai-btn:hover{
+  background: green;
+  color: white;
+}
+
 					`}  
 					</style>  
 				</div>  

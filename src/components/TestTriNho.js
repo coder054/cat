@@ -97,7 +97,7 @@ const TestTriNho = observer(
 			this.resultsOfUser[this.index] = result
 			this.resultOfUserRaw[this.index] = answer
 			console.log('result', result)
-		}
+		}                                         
 
 		render(){ 
 			const sample = {
