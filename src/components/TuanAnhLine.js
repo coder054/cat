@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import LineTo from 'react-lineto'
-import { decorate, observable, flow, computed, action } from "mobx"
+import { decorate, observable, flow, computed, action, toJS } from "mobx"
 import { observer, inject } from "mobx-react"
 import axios from "axios"
 import classNames from 'classnames'
@@ -8,39 +8,10 @@ import matchingData from './../data/matching.json'
 
 
 
-class LineToWrapper extends Component{
-		componentDidUpdate(prevProps, prevState) {
-			// only update chart if the cityname has changed
-			// if (prevProps.match.params.cityname !== this.props.match.params.cityname) {
-			//   this.fetchData()
-			// }
-			// coll
-			console.log('prevProps', prevProps)
-			console.log('this.props ', this.props )
-			
-		}
-
-	render(){
-		const {i, from, to} = this.props 
-		return (
-			<LineTo
-				from={from}  
-				to={to}  
-				fromAnchor="middle right" 
-				toAnchor="middle left"  
-				borderWidth={3} 
-				borderColor="#006699" 
-				key={i} /> 
-		)
-	}
-}
-
-
-
 const TuanAnhLine = observer(
 	class TuanAnhLine extends Component{  
 		data = []
-		lineData = [{},{}, {}]
+		lineData = []
 		resultList= []
 		currentIndex = 1
 		currentQuestionIndex = 0
@@ -49,16 +20,27 @@ const TuanAnhLine = observer(
 		
 		reset= ()=>{
 			let a = this.lineData[this.currentQuestionIndex]
-			a["from" + this.currentQuestionIndex + 1] = null  
-			a["to" + this.currentQuestionIndex + 1] = null  
-			a["from" + this.currentQuestionIndex + 2] = null  
-			a["to" + this.currentQuestionIndex + 2] = null  
-			a["from" + this.currentQuestionIndex + 3] = null  
-			a["to" + this.currentQuestionIndex + 3] = null  
-			a.currentIndex = 1
+			for(let i = 0; i < this.numberOfQuestion(this.data[this.currentQuestionIndex]); i++){
+			  a[i] = {from: null, to: null}
+			}
 			this.resultList[this.currentQuestionIndex] = null 
-
 		}
+
+		reDrawLines = () => {
+			let a = this.lineData[this.currentQuestionIndex]
+			let b = [...a]
+			this.reset()
+
+			for(let i = 0; i < b.length; i++){
+			  setTimeout(() => {
+					a[i] = {from: b[i].from, to: b[i].to}
+						console.log( toJS(this.lineData) )
+			  },100)
+			}
+		
+		}
+
+
 
 		showKetQua = () => {
 			return this.numberOfQuestionLeft() === 0
@@ -92,7 +74,23 @@ const TuanAnhLine = observer(
 			return number
 		}
 
-
+		numberOfQuestion (currentQuestion){
+			let number = 0
+			let question = currentQuestion.acf.question
+			if(question.question_1 && question.question_1.image) {
+				number++
+			}
+			if(question.question_2 && question.question_2.image){
+				number++
+			}
+			if(question.question_3 && question.question_3.image){
+				number++
+			}
+			if(question.question_4 && question.question_4.image){
+				number++
+			}
+			return number
+		}
 
 
 		numberOfQuestionLeft(){
@@ -109,22 +107,32 @@ const TuanAnhLine = observer(
 			
 			let a = this.lineData[this.currentQuestionIndex] 
 
-			if(a.currentIndex === this.numberOfImageOfCurrentQuestion() + 1){
-				return
-			}
-			a["from"+ this.currentQuestionIndex + a.currentIndex] = from
-			this.updateIndex()
+			for(let i = 0; i < a.length; i++){
+			  if(a[i].from){
+
+			  }else{
+			  	a[i].from = from
+			  	break
+			  }
+			}	
+
+			console.log( toJS(a) )
 
 		}
 
 		handleRightImageClick(to){
+			
 			let a = this.lineData[this.currentQuestionIndex] 
-			if(a.currentIndex === this.numberOfImageOfCurrentQuestion() + 1){
-				return
-			}
-			a["to" + this.currentQuestionIndex +  a.currentIndex] = to
-		
-			this.updateIndex()
+
+			for(let i = 0; i < a.length; i++){
+			  if(a[i].to){
+
+			  }else{
+			  	a[i].to = to
+			  	break
+			  }
+			}	
+			console.log( toJS(a) )
 		}
 
 		checkAnswer(){
@@ -143,25 +151,20 @@ const TuanAnhLine = observer(
 			this.resultList[this.currentQuestionIndex] = true
 		}
 
-		updateIndex(){
-
-			let a = this.lineData[this.currentQuestionIndex]
-			if(a["from"+ this.currentQuestionIndex + a.currentIndex] && a["to"+ this.currentQuestionIndex + a.currentIndex]){
-				a.currentIndex++
-			}
-			if(a.currentIndex === this.numberOfImageOfCurrentQuestion() + 1){
-				this.checkAnswer()
-			}
-		}
-
-
 
 		componentDidMount(){
 			this.data = matchingData
 			for(let i = 0; i < this.data.length; i++){
-					this.lineData[i] = {from1: null, from2: null, from3: null, to1: null, to2: null, to3: null, currentIndex: 1}
+					this.lineData.push([])
 					this.resultList.push(null)
+
+					for(let j = 0; j < this.numberOfQuestion(this.data[i]); j++){
+					  this.lineData[i].push({from: null, to: null})
+					}
 			}
+
+			console.log( toJS(this.lineData) )
+
 
 			// NEU DUNG AXIOS THI DUNG DOAN CODE DUOI VA COMMENT DOAN CODE TREN
 			// axios.get("http://khoi.catopiana.com/wp-json/acf/v3/matching?fbclid=IwAR1F4CnA83XLTVrONGyjWHP-gq_v_HS9_wF7FRoHjUmMo0GCd9NvOI9-eww")
@@ -180,26 +183,17 @@ const TuanAnhLine = observer(
 
 		renderLines(){
 				let a = this.lineData[this.currentQuestionIndex]
-				let lines = []
-				for(let i = 0; i < this.numberOfImageOfCurrentQuestion(); i++){
-					lines.push(
-							<div>
-							{/* <LineTo
-								from={}  
-								to={}  
-								fromAnchor="middle right" 
-								toAnchor="middle left"  
-								borderWidth={3} 
-								borderColor="#006699" 
-								key={i} /> */}
-
-								<LineToWrapper i={i} 
-									from={a["from" + this.currentQuestionIndex + (i + 1)]}
-								  to={a["to" + this.currentQuestionIndex +(i + 1)]} />
-							</div>
-						)
-				}
-				return lines
+				return a.map((item, index)=> (
+						<LineTo key={index} 
+									from={item.from}
+								  to={item.to} 
+								  fromAnchor="middle right" 
+									toAnchor="middle left"  
+									borderWidth={3} 
+									borderColor="#006699" 
+								  />
+				))
+				
 		}
 
 		render(){
@@ -218,7 +212,6 @@ const TuanAnhLine = observer(
 
 
 				{this.renderLines()}
-				
 					{!!this.showKetQua() && (
 						<div className="show-kg-button-wr"> 
 							<button onClick={e=> {
@@ -303,7 +296,8 @@ const TuanAnhLine = observer(
 							? this.data.map((item, i) => (
 									<span key={item.id} className={classNames('dot-navigation', {'is-active': this.currentQuestionIndex === i})} onClick={e => {
 										this.currentQuestionIndex = i
-										// this.reset()
+										this.reDrawLines()
+										console.log( toJS(this.lineData) )
 									}}> </span>
 								))
 							: null
