@@ -152,7 +152,7 @@ class ForecastOneCity extends Component {
               <span className="cityname">
                 {this.props.match.params.cityname}
               </span>{" "}
-              in 5 days
+              in 5 days (UTC)
             </p>
             {this.state.show ? (
               <LineChart

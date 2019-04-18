@@ -8,8 +8,9 @@ import Home from "./components/Home"
 import Header from './components/Header';
 import Question from './components/Question';
 import TestTriNho from './components/TestTriNho';
-import MatchingTest from './components/MatchingTest';
+import MatchingTest from './components/TuanAnhLine';
 import PowerPlugDemo from './components/PowerPlugDemo';
+
 import "bootstrap/dist/css/bootstrap.css"
 
 

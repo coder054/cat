@@ -1,6 +1,5 @@
 import React, { Component } from "react"
-import { Link } from "react-router-dom"
-import { withRouter } from "react-router-dom"
+import { withRouter, Link } from "react-router-dom"
 class Header extends Component {
   state = {
     cityname: "",
@@ -30,6 +29,7 @@ class Header extends Component {
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="mr-auto" />
+          <Link className="linktotest" to="matchingtest"> Matching test </Link>
           <form
             onSubmit={this.handleSubmit}
             className="form-inline my-2 my-lg-0"
