@@ -1,6 +1,4 @@
 {
-	"name": "weather",
-	"version": "0.1.0",
 	"private": true,
 	"homepage": "http://coder054.github.io/cat",
 	"dependencies": {
