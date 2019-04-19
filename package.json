@@ -34,7 +34,8 @@
 		"eject": "react-scripts eject",
 		"rmcache": "rm -rf node_modules/gh-pages/.cache",
 		"predeploy": "npm run rmcache & npm run build",
-		"deploy": "gh-pages -d build"
+		"deploy": "gh-pages -d build",
+		"now-build": "react-scripts build"
 	},
 	"eslintConfig": {
 		"extends": "react-app"
