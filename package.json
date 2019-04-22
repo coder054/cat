@@ -1,6 +1,5 @@
 {
 	"private": true,
-	"homepage": "http://coder054.github.io/cat",
 	"dependencies": {
 		"antd": "^3.12.4",
 		"axios": "^0.18.0",
